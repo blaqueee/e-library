@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import pet.juniors_dev.elibrary.dto.form.EmailRequest;
 import pet.juniors_dev.elibrary.dto.form.LoginRequest;
 import pet.juniors_dev.elibrary.dto.form.RegisterRequest;
+import pet.juniors_dev.elibrary.dto.form.ResetPasswordRequest;
 import pet.juniors_dev.elibrary.service.MailSenderService;
 import pet.juniors_dev.elibrary.service.UserService;
 
@@ -14,7 +16,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/")
+@RequestMapping("/accounts")
 public class UserController {
     private final UserService userService;
 
@@ -33,6 +35,19 @@ public class UserController {
     public ResponseEntity<?> createUser(@PathVariable String token) {
         userService.activate(token);
         return ResponseEntity.ok("Your account has been activated!");
+    }
+
+    @PostMapping("/password/reset")
+    public ResponseEntity<?> sendPasswordResetLink(@Valid @RequestBody EmailRequest emailRequest) {
+        userService.sendPasswordResetLink(emailRequest);
+        return ResponseEntity.ok("We sent the link to your email to reset your password!");
+    }
+
+    @PostMapping("/password/reset/{token}")
+    public ResponseEntity<?> resetPassword(@PathVariable String token,
+                                           @Valid @RequestBody ResetPasswordRequest resetRequest) {
+        userService.resetPassword(token, resetRequest);
+        return ResponseEntity.ok("You password has been successfully reset");
     }
 
     @GetMapping("/user") // route for testing jwt access token depending on role

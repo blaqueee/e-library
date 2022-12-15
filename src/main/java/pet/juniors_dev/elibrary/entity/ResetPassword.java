@@ -11,22 +11,16 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "activation_tokens")
-public class ActivationToken {
-    private static final long TOKEN_EXPIRATION_IN_MINUTES = 1440; //24 hours
+@Table(name = "password_reset_tokens")
+public class ResetPassword {
+    private static final long TOKEN_EXPIRATION_IN_MINUTES = 1440;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "username", nullable = false)
-    private String username;
-
-    @Column(name = "email", nullable = false)
-    private String email;
-
-    @Column(name = "password", nullable = false)
-    private String password;
+    @ManyToOne
+    private User user;
 
     @Column(name = "token", nullable = false)
     private String token;

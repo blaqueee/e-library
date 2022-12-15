@@ -5,6 +5,7 @@ import pet.juniors_dev.elibrary.dto.JwtDto;
 import pet.juniors_dev.elibrary.dto.UserDto;
 import pet.juniors_dev.elibrary.dto.form.RegisterRequest;
 import pet.juniors_dev.elibrary.entity.ActivationToken;
+import pet.juniors_dev.elibrary.entity.ResetPassword;
 import pet.juniors_dev.elibrary.entity.Role;
 import pet.juniors_dev.elibrary.entity.User;
 
@@ -58,6 +59,14 @@ public class UserMapper {
                 .password(form.getPassword())
                 .token(UUID.randomUUID().toString())
                 .createdAt(LocalDateTime.now())
+                .build();
+    }
+
+    public ResetPassword toResetPasswordToken(User user) {
+        return ResetPassword.builder()
+                .createdAt(LocalDateTime.now())
+                .token(UUID.randomUUID().toString())
+                .user(user)
                 .build();
     }
 }

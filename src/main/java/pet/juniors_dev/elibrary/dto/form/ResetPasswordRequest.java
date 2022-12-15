@@ -1,22 +1,21 @@
 package pet.juniors_dev.elibrary.dto.form;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class ResetPasswordRequest {
-    @NotNull
+    @JsonProperty("password")
+    @NotBlank
     private String password;
 
-    @NotNull
+    @NotBlank
     @JsonProperty("repeated_password")
     private String repeatedPassword;
 }

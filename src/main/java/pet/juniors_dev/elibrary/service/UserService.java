@@ -10,18 +10,25 @@ import org.springframework.stereotype.Service;
 import pet.juniors_dev.elibrary.configuration.JwtUtils;
 import pet.juniors_dev.elibrary.dto.JwtDto;
 import pet.juniors_dev.elibrary.dto.UserDto;
+import pet.juniors_dev.elibrary.dto.form.EmailRequest;
 import pet.juniors_dev.elibrary.dto.form.LoginRequest;
 import pet.juniors_dev.elibrary.dto.form.RegisterRequest;
+import pet.juniors_dev.elibrary.dto.form.ResetPasswordRequest;
 import pet.juniors_dev.elibrary.entity.ActivationToken;
+import pet.juniors_dev.elibrary.entity.ResetPassword;
 import pet.juniors_dev.elibrary.entity.User;
 import pet.juniors_dev.elibrary.exception.EmailAlreadyExistsException;
+import pet.juniors_dev.elibrary.exception.NotFoundException;
 import pet.juniors_dev.elibrary.exception.TokenException;
 import pet.juniors_dev.elibrary.mapper.UserMapper;
 import pet.juniors_dev.elibrary.repository.ActivationTokenRepository;
+import pet.juniors_dev.elibrary.repository.ResetPasswordRepository;
 import pet.juniors_dev.elibrary.repository.UserRepository;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +36,7 @@ public class UserService {
     private final MailSenderService mailSenderService;
     private final UserRepository userRepository;
     private final ActivationTokenRepository activationTokenRepository;
+    private final ResetPasswordRepository resetPasswordRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder encoder;
     private final AuthenticationManager authenticationManager;
@@ -43,12 +51,14 @@ public class UserService {
         var saved = activationTokenRepository.save(activationToken);
         mailSenderService.sendMessage(saved.getEmail(), "Activate your account!",
                 "Go to the link below to activate your account:\n" +
-                        "http://localhost:8080/activate/" + saved.getToken());
+                        "http://localhost:8080/accounts/activate/" + saved.getToken());
     }
 
     public UserDto activate(String token) throws TokenException {
         ActivationToken activationToken = activationTokenRepository.findByToken(token)
-                .orElseThrow(() -> new TokenException("Token doesn't exists!"));
+                .orElseThrow(() -> new TokenException("Link doesn't exist!"));
+        if (!isTokenValid(activationToken.getCreatedAt(), ActivationToken.getExpirationInMinutes()))
+            throw new TokenException("Link has been expired!");
         User user = userMapper.toUser(activationToken);
         User savedUser = userRepository.save(user);
         activationTokenRepository.delete(activationToken);
@@ -61,6 +71,35 @@ public class UserService {
         String token = jwtUtils.generateJwtToken(auth);
         User user = (User) auth.getPrincipal();
         return userMapper.toJwtDto(user, token);
+    }
+
+    public void sendPasswordResetLink(EmailRequest email) throws NotFoundException {
+        Optional<User> user = userRepository.findByEmail(email.getEmail());
+        if (user.isEmpty())
+            throw new NotFoundException("User with email " + email.getEmail() + " not found!");
+        var token = userMapper.toResetPasswordToken(user.get());
+        var savedToken = resetPasswordRepository.save(token);
+        mailSenderService.sendMessage(user.get().getEmail(), "Reset your password!",
+                "Go to the link below to reset your password:\n" +
+                        "http://localhost:8080/accounts/password/reset/" + savedToken.getToken());
+    }
+
+    public void resetPassword(String token, ResetPasswordRequest resetRequest) throws TokenException, IllegalArgumentException {
+        var resetPassword = resetPasswordRepository.findByToken(token)
+                .orElseThrow(() -> new TokenException("Link doesn't exist!"));
+        if (!resetRequest.getPassword().equals(resetRequest.getRepeatedPassword()))
+            throw new IllegalArgumentException("Passwords are not similar!");
+        if (!isTokenValid(resetPassword.getCreatedAt(), ResetPassword.getExpirationInMinutes()))
+            throw new TokenException("Link has been expired!");
+        User user = resetPassword.getUser();
+        user.setPassword(encoder.encode(resetRequest.getPassword()));
+        userRepository.save(user);
+        resetPasswordRepository.delete(resetPassword);
+    }
+
+    private boolean isTokenValid(LocalDateTime createdAt, long expiresInMinutes) {
+        LocalDateTime deadline = createdAt.plusMinutes(expiresInMinutes);
+        return deadline.isAfter(LocalDateTime.now());
     }
 
     private Authentication authenticate(LoginRequest loginRequest) {

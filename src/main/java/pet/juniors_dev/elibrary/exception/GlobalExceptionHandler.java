@@ -41,4 +41,16 @@ public class GlobalExceptionHandler {
     public String tokenExceptionHandler(TokenException e) {
         return e.getMessage();
     }
+
+    @ExceptionHandler(NotFoundException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String notFoundExceptionHandler(NotFoundException e) {
+        return e.getMessage();
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String illegalArgumentExceptionHandler(IllegalArgumentException e) {
+        return e.getMessage();
+    }
 }
