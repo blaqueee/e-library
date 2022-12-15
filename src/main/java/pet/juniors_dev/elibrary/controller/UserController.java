@@ -6,8 +6,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import pet.juniors_dev.elibrary.dto.form.LoginRequest;
 import pet.juniors_dev.elibrary.dto.form.RegisterRequest;
+import pet.juniors_dev.elibrary.service.MailSenderService;
 import pet.juniors_dev.elibrary.service.UserService;
 
+import javax.mail.internet.AddressException;
 import javax.validation.Valid;
 
 @RestController
@@ -17,13 +19,20 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequest registerRequest) {
-        return ResponseEntity.ok(userService.register(registerRequest));
+    public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequest registerRequest) throws AddressException {
+        userService.register(registerRequest);
+        return ResponseEntity.ok("Activation link sent to your email!");
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
         return ResponseEntity.ok(userService.login(loginRequest));
+    }
+
+    @GetMapping("/activate/{token}")
+    public ResponseEntity<?> createUser(@PathVariable String token) {
+        userService.activate(token);
+        return ResponseEntity.ok("Your account has been activated!");
     }
 
     @GetMapping("/user") // route for testing jwt access token depending on role

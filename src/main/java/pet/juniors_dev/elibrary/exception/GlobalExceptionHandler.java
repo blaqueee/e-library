@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.mail.internet.AddressException;
 import java.util.Objects;
 
 @RestControllerAdvice
@@ -29,5 +30,15 @@ public class GlobalExceptionHandler {
                 .getDefaultMessage();
     }
 
+    @ExceptionHandler(AddressException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String addressExceptionHandler(AddressException e) {
+        return e.getMessage();
+    }
 
+    @ExceptionHandler(TokenException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String tokenExceptionHandler(TokenException e) {
+        return e.getMessage();
+    }
 }
