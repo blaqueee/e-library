@@ -2,6 +2,8 @@ package pet.juniors_dev.elibrary.service;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pet.juniors_dev.elibrary.dto.BookDto;
@@ -31,6 +33,16 @@ public class BookService {
         Book book = uploadBook(bookRequest, user);
         Book savedBook = bookRepository.save(book);
         return bookMapper.toDto(savedBook);
+    }
+
+    public Page<BookDto> getTop(Pageable pageable) {
+        var books = bookRepository.findAllByOrderByRatingDesc(pageable);
+        return books.map(bookMapper::toDto);
+    }
+
+    public Page<BookDto> findByNameAndAuthor(String value, Pageable pageable) {
+        var books = bookRepository.findByNameAndAuthor(value, pageable);
+        return books.map(bookMapper::toDto);
     }
 
     private Book uploadBook(BookRequest bookRequest, User user) throws FileException, FileWriteException, GCPFileUploadException {

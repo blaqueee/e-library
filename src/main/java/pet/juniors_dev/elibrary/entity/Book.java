@@ -3,6 +3,7 @@ package pet.juniors_dev.elibrary.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
@@ -37,6 +38,9 @@ public class Book {
 
     @Column(name = "book_download_url")
     private String bookDownloadUrl;
+
+    @Column(name = "rating", nullable = false)
+    private BigDecimal rating;
 
     @ManyToOne
     private User creator;

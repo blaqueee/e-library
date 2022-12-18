@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -16,6 +17,10 @@ public class ReviewRequest {
     private String comment;
 
     @JsonProperty("rating")
-    @NotBlank
+    @NotNull
     private Integer rating;
+
+    @JsonProperty("book_id")
+    @NotNull
+    private Long bookId;
 }

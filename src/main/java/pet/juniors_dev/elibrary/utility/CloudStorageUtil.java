@@ -5,7 +5,6 @@ import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
@@ -16,12 +15,8 @@ import pet.juniors_dev.elibrary.exception.FileException;
 import pet.juniors_dev.elibrary.exception.FileWriteException;
 import pet.juniors_dev.elibrary.exception.GCPFileUploadException;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.UUID;
 
 @Component

@@ -7,4 +7,5 @@ import pet.juniors_dev.elibrary.entity.Review;
 
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
+    Long countByBook(Book book);
 }

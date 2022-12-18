@@ -3,6 +3,7 @@ package pet.juniors_dev.elibrary.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
@@ -31,6 +32,9 @@ public class BookDto {
 
     @JsonProperty("book_download_url")
     private String bookDownloadUrl;
+
+    @JsonProperty("rating")
+    private BigDecimal rating;
 
     @JsonProperty("year")
     private Integer year;

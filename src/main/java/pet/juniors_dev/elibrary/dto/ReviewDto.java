@@ -11,8 +11,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class ReviewDto {
-    @JsonProperty("review")
-    private String review;
+    @JsonProperty("comment")
+    private String comment;
 
     @JsonProperty("rating")
     private Integer rating;
