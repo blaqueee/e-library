@@ -51,7 +51,7 @@ public class UserService {
         var saved = activationTokenRepository.save(activationToken);
         mailSenderService.sendMessage(saved.getEmail(), "Activate your account!",
                 "Go to the link below to activate your account:\n" +
-                        "http://localhost:8080/accounts/activate/" + saved.getToken());
+                        "http://localhost:8080/api/accounts/activate/" + saved.getToken());
     }
 
     public UserDto activate(String token) throws TokenException {
@@ -81,7 +81,7 @@ public class UserService {
         var savedToken = resetPasswordRepository.save(token);
         mailSenderService.sendMessage(user.get().getEmail(), "Reset your password!",
                 "Go to the link below to reset your password:\n" +
-                        "http://localhost:8080/accounts/password/reset/" + savedToken.getToken());
+                        "http://localhost:8080/api/accounts/password/reset/" + savedToken.getToken());
     }
 
     public void resetPassword(String token, ResetPasswordRequest resetRequest) throws TokenException, IllegalArgumentException {

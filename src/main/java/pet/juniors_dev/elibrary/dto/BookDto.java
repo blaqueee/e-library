@@ -11,6 +11,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class BookDto {
+    @JsonProperty("id")
+    private Long id;
+
     @JsonProperty("name")
     private String name;
 
@@ -20,12 +23,21 @@ public class BookDto {
     @JsonProperty("author")
     private String author;
 
+    @JsonProperty("image_url")
+    private String imageUrl;
+
+    @JsonProperty("book_url")
+    private String bookUrl;
+
+    @JsonProperty("book_download_url")
+    private String bookDownloadUrl;
+
     @JsonProperty("year")
     private Integer year;
 
-    @JsonProperty("created_at")
-    private LocalDateTime createdAt;
-
     @JsonProperty("creator")
     private UserDto creator;
+
+    @JsonProperty("created_at")
+    private LocalDateTime createdAt;
 }

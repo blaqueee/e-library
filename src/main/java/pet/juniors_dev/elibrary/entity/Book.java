@@ -35,6 +35,9 @@ public class Book {
     @Column(name = "book_url")
     private String bookUrl;
 
+    @Column(name = "book_download_url")
+    private String bookDownloadUrl;
+
     @ManyToOne
     private User creator;
 

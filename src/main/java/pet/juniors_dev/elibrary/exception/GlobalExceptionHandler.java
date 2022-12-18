@@ -53,4 +53,22 @@ public class GlobalExceptionHandler {
     public String illegalArgumentExceptionHandler(IllegalArgumentException e) {
         return e.getMessage();
     }
+
+    @ExceptionHandler(FileException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String fileExceptionHandler(FileException e) {
+        return e.getMessage();
+    }
+
+    @ExceptionHandler(FileWriteException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String fileWriteExceptionHandler(FileWriteException e) {
+        return e.getMessage();
+    }
+
+    @ExceptionHandler(GCPFileUploadException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String GCPFileUploadExceptionHandler(GCPFileUploadException e) {
+        return e.getMessage();
+    }
 }

@@ -13,8 +13,8 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @Builder
 public class BookRequest {
-    @JsonProperty("name")
     @NotBlank
+    @JsonProperty("name")
     private String name;
 
     @JsonProperty("description")
@@ -24,6 +24,10 @@ public class BookRequest {
     @JsonProperty("author")
     @NotBlank
     private String author;
+
+    @JsonProperty("year")
+    @NotNull
+    private Integer year;
 
     @JsonProperty("image")
     @NotNull
