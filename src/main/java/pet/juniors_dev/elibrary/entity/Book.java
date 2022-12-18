@@ -1,55 +1,50 @@
 package pet.juniors_dev.elibrary.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 
-@Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "Books")
+@Builder
+@Entity
+@Table(name = "books")
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotEmpty
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @NotEmpty
+    @Column(name = "description", nullable = false, length = 1000)
     private String description;
 
-    @NotEmpty
-    private String authors;
+    @Column(name = "author", nullable = false)
+    private String author;
 
-    @NotEmpty
-    private String language;
+    @Column(name = "year", nullable = false)
+    private Integer year;
 
-    @NotEmpty
-    private int year;
+    @Column(name = "image_url")
+    private String imageUrl;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    @Column(name = "book_url")
+    private String bookUrl;
 
-    @OneToMany
-    private List<Review> reviews;
+    @Column(name = "book_download_url")
+    private String bookDownloadUrl;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "book")
-    private List<Comment> comments = new java.util.ArrayList<>();
+    @Column(name = "rating", nullable = false)
+    private BigDecimal rating;
 
     @ManyToOne
-    @JoinColumn(name = "downloaded_user_id")
-    private User downloadedUser;
+    private User creator;
 
-
-
-//    private String urlOnServer;
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
 }

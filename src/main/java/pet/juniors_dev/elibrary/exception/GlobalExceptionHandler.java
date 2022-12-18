@@ -1,5 +1,6 @@
 package pet.juniors_dev.elibrary.exception;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -51,6 +52,30 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String illegalArgumentExceptionHandler(IllegalArgumentException e) {
+        return e.getMessage();
+    }
+
+    @ExceptionHandler(FileException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String fileExceptionHandler(FileException e) {
+        return e.getMessage();
+    }
+
+    @ExceptionHandler(FileWriteException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String fileWriteExceptionHandler(FileWriteException e) {
+        return e.getMessage();
+    }
+
+    @ExceptionHandler(GCPFileUploadException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String GCPFileUploadExceptionHandler(GCPFileUploadException e) {
+        return e.getMessage();
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String dataIntegrityViolationExceptionHandler(DataIntegrityViolationException e) {
         return e.getMessage();
     }
 }

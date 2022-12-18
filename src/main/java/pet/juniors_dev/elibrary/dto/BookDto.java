@@ -1,44 +1,47 @@
 package pet.juniors_dev.elibrary.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import pet.juniors_dev.elibrary.entity.Comment;
-import pet.juniors_dev.elibrary.entity.Review;
-import pet.juniors_dev.elibrary.entity.User;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.*;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class BookDto {
-    @NotEmpty
+    @JsonProperty("id")
+    private Long id;
+
+    @JsonProperty("name")
     private String name;
 
-    @NotEmpty
+    @JsonProperty("description")
     private String description;
 
-    @NotEmpty
-    private String authors;
+    @JsonProperty("author")
+    private String author;
 
-    @NotEmpty
-    private String language;
+    @JsonProperty("image_url")
+    private String imageUrl;
 
-    @NotEmpty
-    private int year;
+    @JsonProperty("book_url")
+    private String bookUrl;
 
-    @Column(name = "created_at")
+    @JsonProperty("book_download_url")
+    private String bookDownloadUrl;
+
+    @JsonProperty("rating")
+    private BigDecimal rating;
+
+    @JsonProperty("year")
+    private Integer year;
+
+    @JsonProperty("creator")
+    private UserDto creator;
+
+    @JsonProperty("created_at")
     private LocalDateTime createdAt;
-
-    private List<Review> reviews;
-
-    private List<Comment> comments = new java.util.ArrayList<>();
-
-    private User downloadedUser;
 }

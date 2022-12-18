@@ -3,37 +3,32 @@ package pet.juniors_dev.elibrary.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 
-@Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "Reviews")
+@Builder
+@Entity
+@Table(name = "reviews")
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
     private long id;
 
-    @NotEmpty
-    private String review;
+    @Column(name = "comment", length = 500)
+    private String comment;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
-
-    @Min(value = 1)
-    @Max(value = 10)
-    private int rating;
+    @Column(name = "rating", nullable = false)
+    private Integer rating;
 
     @ManyToOne
-    private User user;
+    private User commentator;
 
     @ManyToOne
     private Book book;
 
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
 }
