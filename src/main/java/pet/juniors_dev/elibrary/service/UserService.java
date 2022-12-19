@@ -10,10 +10,7 @@ import org.springframework.stereotype.Service;
 import pet.juniors_dev.elibrary.configuration.JwtUtils;
 import pet.juniors_dev.elibrary.dto.JwtDto;
 import pet.juniors_dev.elibrary.dto.UserDto;
-import pet.juniors_dev.elibrary.dto.form.EmailRequest;
-import pet.juniors_dev.elibrary.dto.form.LoginRequest;
-import pet.juniors_dev.elibrary.dto.form.RegisterRequest;
-import pet.juniors_dev.elibrary.dto.form.ResetPasswordRequest;
+import pet.juniors_dev.elibrary.dto.form.*;
 import pet.juniors_dev.elibrary.entity.ActivationToken;
 import pet.juniors_dev.elibrary.entity.ResetPassword;
 import pet.juniors_dev.elibrary.entity.User;
@@ -95,6 +92,10 @@ public class UserService {
         user.setPassword(encoder.encode(resetRequest.getPassword()));
         userRepository.save(user);
         resetPasswordRepository.delete(resetPassword);
+    }
+
+    public void updateUser(UserEditRequest userEditRequest){
+
     }
 
     private boolean isTokenValid(LocalDateTime createdAt, long expiresInMinutes) {

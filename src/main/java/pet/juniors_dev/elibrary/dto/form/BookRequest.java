@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -20,6 +21,10 @@ public class BookRequest {
     @JsonProperty("description")
     @NotBlank
     private String description;
+
+    @JsonProperty("genre_id")
+    @NotNull
+    private Long genreId;
 
     @JsonProperty("author")
     @NotBlank
