@@ -21,13 +21,14 @@ public class BookMapper {
     private final UserMapper userMapper;
     private final GenreMapper genreMapper;
     private final GenreRepository genreRepository;
-    private final NotFoundException notFoundException;
 
     public Book toEntity(BookRequest book, User user, String imageUrl, FileDto bookUrl) {
         return Book.builder()
                 .name(book.getName())
                 .description(book.getDescription())
-                .genres(Set.of(genreRepository.findById(book.getGenreId()).orElseThrow(NotFoundException::new)))
+                .genres(Set.of(
+                        genreRepository.findById(book.getGenreId())
+                        .orElseThrow(NotFoundException::new)))
                 .author(book.getAuthor())
                 .year(book.getYear())
                 .imageUrl(imageUrl)
@@ -44,7 +45,9 @@ public class BookMapper {
                 .id(book.getId())
                 .name(book.getName())
                 .description(book.getDescription())
-                .genres(book.getGenres().stream().map(genreMapper::toDto).collect(Collectors.toSet()))
+                .genres(book.getGenres().stream()
+                        .map(genreMapper::toDto)
+                        .collect(Collectors.toSet()))
                 .author(book.getAuthor())
                 .year(book.getYear())
                 .imageUrl(book.getImageUrl())
