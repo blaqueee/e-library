@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -20,6 +21,9 @@ public class BookDto {
 
     @JsonProperty("description")
     private String description;
+
+    @JsonProperty("genres")
+    private Set<GenreDto> genres;
 
     @JsonProperty("author")
     private String author;

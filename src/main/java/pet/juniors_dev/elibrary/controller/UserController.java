@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import pet.juniors_dev.elibrary.dto.form.EmailRequest;
-import pet.juniors_dev.elibrary.dto.form.LoginRequest;
-import pet.juniors_dev.elibrary.dto.form.RegisterRequest;
-import pet.juniors_dev.elibrary.dto.form.ResetPasswordRequest;
+import pet.juniors_dev.elibrary.dto.form.*;
 import pet.juniors_dev.elibrary.service.MailSenderService;
 import pet.juniors_dev.elibrary.service.UserService;
 
@@ -59,4 +56,8 @@ public class UserController {
     public ResponseEntity<String> mentorRoute(Authentication authentication) {
         return ResponseEntity.ok("hello mentor");
     }
+
+//    public ResponseEntity<?> userEdit(@Valid @RequestBody UserEditRequest userEditRequest){
+//
+//    }
 }
