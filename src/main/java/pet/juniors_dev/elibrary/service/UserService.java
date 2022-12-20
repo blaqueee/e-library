@@ -1,31 +1,34 @@
 package pet.juniors_dev.elibrary.service;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import pet.juniors_dev.elibrary.configuration.JwtUtils;
+import pet.juniors_dev.elibrary.dto.FileDto;
 import pet.juniors_dev.elibrary.dto.JwtDto;
 import pet.juniors_dev.elibrary.dto.UserDto;
 import pet.juniors_dev.elibrary.dto.form.*;
 import pet.juniors_dev.elibrary.entity.ActivationToken;
 import pet.juniors_dev.elibrary.entity.ResetPassword;
 import pet.juniors_dev.elibrary.entity.User;
-import pet.juniors_dev.elibrary.exception.EmailAlreadyExistsException;
-import pet.juniors_dev.elibrary.exception.NotFoundException;
-import pet.juniors_dev.elibrary.exception.TokenException;
+import pet.juniors_dev.elibrary.exception.*;
 import pet.juniors_dev.elibrary.mapper.UserMapper;
 import pet.juniors_dev.elibrary.repository.ActivationTokenRepository;
 import pet.juniors_dev.elibrary.repository.ResetPasswordRepository;
 import pet.juniors_dev.elibrary.repository.UserRepository;
+import pet.juniors_dev.elibrary.utility.CloudStorageUtil;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +41,7 @@ public class UserService {
     private final PasswordEncoder encoder;
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
+    private final CloudStorageUtil cloudStorage;
 
     public void register(RegisterRequest registerForm) throws EmailAlreadyExistsException, AddressException {
         if (userRepository.existsByEmail(registerForm.getEmail()) || activationTokenRepository.existsByEmail(registerForm.getEmail()))
@@ -94,8 +98,20 @@ public class UserService {
         resetPasswordRepository.delete(resetPassword);
     }
 
-    public void updateUser(UserEditRequest userEditRequest){
+    public UserDto updateUser(UserEditRequest userEditRequest, User principal) throws FileException, FileWriteException, GCPFileUploadException {
+        checkAvatar(userEditRequest.getAvatar());
+        FileDto file = cloudStorage.uploadFile(userEditRequest.getAvatar());
+        userEditRequest.setPassword(encoder.encode(userEditRequest.getPassword()));
+        User user = userMapper.toUser(userEditRequest, principal, file);
+        User saved = userRepository.save(user);
+        return userMapper.toUserDto(saved);
+    }
 
+    private void checkAvatar(MultipartFile avatar) throws FileException {
+        String extension = FilenameUtils.getExtension(avatar.getOriginalFilename());
+        Set<String> extensions = Set.of("jpg", "jpeg", "img", "png", "svg");
+        if (!extensions.contains(extension))
+            throw new FileException("Avatar's extension is not correct!");
     }
 
     private boolean isTokenValid(LocalDateTime createdAt, long expiresInMinutes) {

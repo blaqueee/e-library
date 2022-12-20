@@ -2,10 +2,11 @@ package pet.juniors_dev.elibrary.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import pet.juniors_dev.elibrary.dto.UserDto;
 import pet.juniors_dev.elibrary.dto.form.*;
-import pet.juniors_dev.elibrary.service.MailSenderService;
+import pet.juniors_dev.elibrary.entity.User;
 import pet.juniors_dev.elibrary.service.UserService;
 
 import javax.mail.internet.AddressException;
@@ -47,17 +48,9 @@ public class UserController {
         return ResponseEntity.ok("You password has been successfully reset");
     }
 
-    @GetMapping("/user") // route for testing jwt access token depending on role
-    public ResponseEntity<String> userRoute(Authentication authentication) {
-        return ResponseEntity.ok("hello user");
+    @PostMapping("/edit")
+    public ResponseEntity<UserDto> userEdit(@Valid @ModelAttribute UserEditRequest userEditRequest,
+                                            @AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(userService.updateUser(userEditRequest, user));
     }
-
-    @GetMapping("/admin") // route for testing jwt access token depending on role
-    public ResponseEntity<String> mentorRoute(Authentication authentication) {
-        return ResponseEntity.ok("hello mentor");
-    }
-
-//    public ResponseEntity<?> userEdit(@Valid @RequestBody UserEditRequest userEditRequest){
-//
-//    }
 }
