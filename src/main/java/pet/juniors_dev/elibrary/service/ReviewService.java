@@ -30,12 +30,13 @@ public class ReviewService {
         Review review = reviewMapper.toEntity(reviewRequest, user, book);
         Review savedReview = reviewRepository.save(review);
         book.setRating(getNewRating(book, reviewRequest.getRating()));
+        book.setCountOfReviews(book.getCountOfReviews() + 1);
         bookRepository.save(book);
         return reviewMapper.toDto(savedReview);
     }
 
     private BigDecimal getNewRating(Book book, Integer newRating) {
-        Long reviewAmount = reviewRepository.countByBook(book);
+        Integer reviewAmount = book.getCountOfReviews();
         double totalSum = ((reviewAmount - 1) * book.getRating().doubleValue()) + newRating;
         return BigDecimal.valueOf(totalSum / reviewAmount);
     }

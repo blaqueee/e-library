@@ -36,4 +36,10 @@ public class BookController {
             @PageableDefault(page = 0, size = 5) Pageable pageable) {
         return ResponseEntity.ok(bookService.findByNameAndAuthor(value, pageable));
     }
+
+    @GetMapping()
+    public ResponseEntity<Page<BookDto>> getByGenre(@RequestParam(name = "genre") String genre,
+                                                             @PageableDefault(page = 0, size = 5) Pageable pageable) {
+        return ResponseEntity.ok(bookService.getByGenre(genre, pageable));
+    }
 }

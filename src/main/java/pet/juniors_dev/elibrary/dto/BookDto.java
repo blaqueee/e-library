@@ -40,6 +40,9 @@ public class BookDto {
     @JsonProperty("rating")
     private BigDecimal rating;
 
+    @JsonProperty("count_of_reviews")
+    private Integer countOfReviews;
+
     @JsonProperty("year")
     private Integer year;
 

@@ -9,8 +9,12 @@ import pet.juniors_dev.elibrary.entity.Book;
 
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long> {
-    Page<Book> findAllByOrderByRatingDesc(Pageable pageable);
+    @Query("SELECT b from Book b WHERE b.countOfReviews > :value ORDER BY b.rating DESC ")
+    Page<Book> findAllByOrderByRatingDesc(int value, Pageable pageable);
 
     @Query("SELECT b FROM Book b WHERE b.name LIKE %:value% OR b.author LIKE %:value% ORDER BY b.name")
     Page<Book> findByNameAndAuthor(String value, Pageable pageable);
+
+    @Query("SELECT b FROM Book b INNER JOIN b.genres g WHERE g.name = :genre ORDER BY b.name")
+    Page<Book> findBooksByGenre(String genre, Pageable pageable);
 }
