@@ -26,7 +26,7 @@ public class Book {
     @Column(name = "description", nullable = false, length = 1000)
     private String description;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     private Set<Genre> genres = new HashSet<>();
 
     @Column(name = "author", nullable = false)
@@ -46,6 +46,9 @@ public class Book {
 
     @Column(name = "rating", nullable = false)
     private BigDecimal rating;
+
+    @Column(name = "count_of_reviews")
+    private Integer countOfReviews;
 
     @ManyToOne
     private User creator;

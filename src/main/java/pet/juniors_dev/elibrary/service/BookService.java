@@ -31,12 +31,19 @@ public class BookService {
         checkImage(bookRequest.getImage());
         checkBook(bookRequest.getBook());
         Book book = uploadBook(bookRequest, user);
+        book.setCountOfReviews(0);
         Book savedBook = bookRepository.save(book);
         return bookMapper.toDto(savedBook);
     }
 
     public Page<BookDto> getTop(Pageable pageable) {
-        var books = bookRepository.findAllByOrderByRatingDesc(pageable);
+        //Надо куда-то в Properties вывести значение, который мы используем как минимальное количество "оценок" для топа книг
+        var books = bookRepository.findAllByOrderByRatingDesc(10, pageable);
+        return books.map(bookMapper::toDto);
+    }
+
+    public Page<BookDto> getByGenre(String genre, Pageable pageable) {
+        var books = bookRepository.findBooksByGenre(genre, pageable);
         return books.map(bookMapper::toDto);
     }
 
