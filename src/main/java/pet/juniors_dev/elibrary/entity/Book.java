@@ -5,6 +5,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -25,9 +26,8 @@ public class Book {
     @Column(name = "description", nullable = false, length = 1000)
     private String description;
 
-    @Column(name = "genre", nullable = false)
     @ManyToMany
-    private Set<Genre> genres;
+    private Set<Genre> genres = new HashSet<>();
 
     @Column(name = "author", nullable = false)
     private String author;

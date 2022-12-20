@@ -3,6 +3,7 @@ package pet.juniors_dev.elibrary.dto.form;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Getter
@@ -11,10 +12,10 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @Builder
 public class UserEditRequest {
-    @NotNull
+    @NotBlank
     private String username;
 
-    @NotNull
+    @NotBlank
     private String password;
 
     @NotNull

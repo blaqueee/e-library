@@ -1,9 +1,11 @@
 package pet.juniors_dev.elibrary.mapper;
 
 import org.springframework.stereotype.Component;
+import pet.juniors_dev.elibrary.dto.FileDto;
 import pet.juniors_dev.elibrary.dto.JwtDto;
 import pet.juniors_dev.elibrary.dto.UserDto;
 import pet.juniors_dev.elibrary.dto.form.RegisterRequest;
+import pet.juniors_dev.elibrary.dto.form.UserEditRequest;
 import pet.juniors_dev.elibrary.entity.ActivationToken;
 import pet.juniors_dev.elibrary.entity.ResetPassword;
 import pet.juniors_dev.elibrary.entity.Role;
@@ -19,9 +21,16 @@ public class UserMapper {
                 .id(user.getId())
                 .username(user.getUsername())
                 .email(user.getEmail())
-                .avatarUrl("none")
+                .avatarUrl(user.getAvatarUrl())
                 .role(user.getRole().getValue())
                 .build();
+    }
+
+    public User toUser(UserEditRequest userEditRequest, User user, FileDto avatarUrl) {
+        user.setAvatarUrl(avatarUrl.getFileUrl());
+        user.setUsername(userEditRequest.getUsername());
+        user.setPassword(userEditRequest.getPassword());
+        return user;
     }
 
     public User toUser(RegisterRequest registerForm) {
@@ -29,6 +38,7 @@ public class UserMapper {
                 .email(registerForm.getEmail())
                 .username(registerForm.getUsername())
                 .password(registerForm.getPassword())
+                .avatarUrl("anon_user.jpeg")
                 .role(Role.ROLE_USER)
                 .build();
     }
@@ -38,6 +48,7 @@ public class UserMapper {
                 .username(token.getUsername())
                 .email(token.getEmail())
                 .password(token.getPassword())
+                .avatarUrl("anon_user.jpeg")
                 .role(Role.ROLE_USER)
                 .build();
     }
