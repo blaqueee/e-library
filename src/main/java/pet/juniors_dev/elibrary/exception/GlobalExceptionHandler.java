@@ -78,4 +78,10 @@ public class GlobalExceptionHandler {
     public String dataIntegrityViolationExceptionHandler(DataIntegrityViolationException e) {
         return e.getMessage();
     }
+
+    @ExceptionHandler(NotPermittedException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String notPermittedExceptionHandler(NotPermittedException e) {
+        return e.getMessage();
+    }
 }

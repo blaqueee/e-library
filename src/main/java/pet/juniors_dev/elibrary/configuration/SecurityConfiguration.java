@@ -3,6 +3,7 @@ package pet.juniors_dev.elibrary.configuration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -44,9 +45,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
         http.authorizeRequests()
-                .antMatchers("/api/book/**").fullyAuthenticated()
-                .antMatchers("/user").hasRole("USER")
-                .antMatchers("/admin").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/api/books/**").fullyAuthenticated()
+                .antMatchers(HttpMethod.DELETE, "/api/books/**").fullyAuthenticated()
+
+                .antMatchers("/api/bookmarks/**").fullyAuthenticated()
+
+                .antMatchers(HttpMethod.POST, "/api/reviews/**").fullyAuthenticated()
+                .antMatchers(HttpMethod.DELETE, "/api/reviews/**").fullyAuthenticated()
                 .anyRequest().permitAll();
 
         http.csrf().disable()

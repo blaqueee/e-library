@@ -1,6 +1,8 @@
 package pet.juniors_dev.elibrary.entity;
 
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -26,7 +28,8 @@ public class Review {
     @ManyToOne
     private User commentator;
 
-    @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @ManyToOne(cascade = CascadeType.ALL)
     private Book book;
 
     @Column(name = "created_at", nullable = false)

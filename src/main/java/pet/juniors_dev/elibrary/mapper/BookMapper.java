@@ -54,6 +54,7 @@ public class BookMapper {
                 .bookUrl(book.getBookUrl())
                 .bookDownloadUrl(book.getBookDownloadUrl())
                 .rating(book.getRating())
+                .countOfReviews(book.getCountOfReviews())
                 .creator(userMapper.toUserDto(book.getCreator()))
                 .createdAt(book.getCreatedAt())
                 .build();

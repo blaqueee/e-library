@@ -9,10 +9,12 @@ import pet.juniors_dev.elibrary.entity.Book;
 import pet.juniors_dev.elibrary.entity.Bookmark;
 import pet.juniors_dev.elibrary.entity.User;
 
+import java.util.List;
+
 @Repository
 public interface BookmarkRepository extends JpaRepository<Bookmark, Long> {
     @Transactional
     void deleteByBook(Book book);
 
-    Page<Bookmark> findAllByUser(User user, Pageable pageable);
+    List<Bookmark> findAllByUser(User user);
 }
