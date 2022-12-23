@@ -2,8 +2,7 @@ package pet.juniors_dev.elibrary.service;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pet.juniors_dev.elibrary.dto.BookDto;
@@ -11,14 +10,14 @@ import pet.juniors_dev.elibrary.dto.FileDto;
 import pet.juniors_dev.elibrary.dto.form.BookRequest;
 import pet.juniors_dev.elibrary.entity.Book;
 import pet.juniors_dev.elibrary.entity.User;
-import pet.juniors_dev.elibrary.exception.FileException;
-import pet.juniors_dev.elibrary.exception.FileWriteException;
-import pet.juniors_dev.elibrary.exception.GCPFileUploadException;
+import pet.juniors_dev.elibrary.exception.*;
 import pet.juniors_dev.elibrary.mapper.BookMapper;
 import pet.juniors_dev.elibrary.repository.BookRepository;
 import pet.juniors_dev.elibrary.utility.CloudStorageUtil;
 
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -36,20 +35,39 @@ public class BookService {
         return bookMapper.toDto(savedBook);
     }
 
-    public Page<BookDto> getTop(Pageable pageable) {
-        //Надо куда-то в Properties вывести значение, который мы используем как минимальное количество "оценок" для топа книг
-        var books = bookRepository.findAllByOrderByRatingDesc(10, pageable);
-        return books.map(bookMapper::toDto);
+    public List<BookDto> getTop() {
+        var books = bookRepository.findAllByOrderByRatingDesc(10);
+        return books.stream()
+                .map(bookMapper::toDto)
+                .collect(Collectors.toList());
     }
 
-    public Page<BookDto> getByGenre(String genre, Pageable pageable) {
-        var books = bookRepository.findBooksByGenre(genre, pageable);
-        return books.map(bookMapper::toDto);
+    public List<BookDto> getByGenre(String genre) {
+        var books = bookRepository.findBooksByGenre(genre);
+        return books.stream()
+                .map(bookMapper::toDto)
+                .collect(Collectors.toList());
     }
 
-    public Page<BookDto> findByNameAndAuthor(String value, Pageable pageable) {
-        var books = bookRepository.findByNameAndAuthor(value, pageable);
-        return books.map(bookMapper::toDto);
+    public List<BookDto> findByNameAndAuthor(String value) {
+        var books = bookRepository.findByNameAndAuthor(value);
+        return books.stream()
+                .map(bookMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<BookDto> findNewest() {
+        var books = bookRepository.findFirst20ByOrderByCreatedAtDesc();
+        return books.stream()
+                .map(bookMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<BookDto> findAll() {
+        var books = bookRepository.findAll();
+        return books.stream()
+                .map(bookMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     private Book uploadBook(BookRequest bookRequest, User user) throws FileException, FileWriteException, GCPFileUploadException {
@@ -69,5 +87,13 @@ public class BookService {
         String extension = FilenameUtils.getExtension(file.getOriginalFilename());
         if (!"pdf".equals(extension))
             throw new FileException("Book's extension is not correct!");
+    }
+
+    public void delete(Long bookId, User user) throws NotFoundException, NotPermittedException {
+        var book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new NotFoundException("Book with id " + bookId + " not found!"));
+        if (!book.getCreator().getId().equals(user.getId()))
+            throw new NotPermittedException("You can't remove others' books!");
+        bookRepository.delete(book);
     }
 }

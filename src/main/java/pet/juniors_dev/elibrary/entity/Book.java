@@ -1,6 +1,8 @@
 package pet.juniors_dev.elibrary.entity;
 
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -26,7 +28,7 @@ public class Book {
     @Column(name = "description", nullable = false, length = 1000)
     private String description;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Genre> genres = new HashSet<>();
 
     @Column(name = "author", nullable = false)

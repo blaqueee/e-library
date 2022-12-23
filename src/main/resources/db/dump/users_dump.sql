@@ -1,1 +1,0 @@
-INSERT INTO public.users (email, password, role, username) VALUES ('kajrattobokelov2@gmail.com', '$2a$10$lnotu132.VYAGuC9fX7TTeLzokjb1H2y4RMvmJAu1ZwRxJU.nhbqy', 'ROLE_USER', 'blaque');

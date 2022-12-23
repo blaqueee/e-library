@@ -1,8 +1,6 @@
 package pet.juniors_dev.elibrary.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pet.juniors_dev.elibrary.dto.BookDto;
 import pet.juniors_dev.elibrary.dto.BookmarkDto;
@@ -11,12 +9,15 @@ import pet.juniors_dev.elibrary.entity.Book;
 import pet.juniors_dev.elibrary.entity.Bookmark;
 import pet.juniors_dev.elibrary.entity.User;
 import pet.juniors_dev.elibrary.exception.NotFoundException;
+import pet.juniors_dev.elibrary.exception.NotPermittedException;
 import pet.juniors_dev.elibrary.mapper.BookMapper;
 import pet.juniors_dev.elibrary.mapper.BookmarkMapper;
 import pet.juniors_dev.elibrary.repository.BookRepository;
 import pet.juniors_dev.elibrary.repository.BookmarkRepository;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -35,16 +36,19 @@ public class BookmarkService {
         return bookmarkMapper.toDto(bookmark);
     }
 
-    public void deleteBookmark(Long bookId) {
-        Optional<Book> bookOptional = bookRepository.findById(bookId);
-        if (bookOptional.isEmpty())
-            throw new NotFoundException("Book with id " + bookId + " not found!");
-        bookmarkRepository.deleteByBook(bookOptional.get());
+    public void deleteBookmark(Long bookmarkId, User user) {
+        Bookmark bookmark = bookmarkRepository.findById(bookmarkId)
+                .orElseThrow(() -> new NotFoundException("Bookmark with id " + bookmarkId + " not found!"));
+        if (!bookmark.getUser().getId().equals(user.getId()))
+            throw new NotPermittedException("You can't delete others' bookmarks!");
+        bookmarkRepository.delete(bookmark);
     }
 
-    public Page<BookDto> getBookmarksByUser(User user, Pageable pageable){
-        var bookmarks = bookmarkRepository.findAllByUser(user, pageable);
-        return bookmarks.map(Bookmark::getBook)
-                .map(bookMapper::toDto);
+    public List<BookDto> getBookmarksByUser(User user){
+        var bookmarks = bookmarkRepository.findAllByUser(user);
+        return bookmarks.stream()
+                .map(Bookmark::getBook)
+                .map(bookMapper::toDto)
+                .collect(Collectors.toList());
     }
 }
